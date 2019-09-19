@@ -1,0 +1,144 @@
+<html>
+<head>
+<title> Grade Calculator </title>
+<script type = "text/javascript">
+	var category_count = 0;
+	var total_weight = 0;
+	var total_grade = 0;
+	
+	function setCategory(){
+		return prompt("Enter Category Name");
+	}
+	
+	function setGradeInput(){
+		return prompt("Enter Current Grade for Category as a Percent without %-sign");
+	}
+	
+	function setWeightInput(){
+		return prompt("Enter Current Weight for Category as Percent without %-sign");
+	}
+	
+	function getGrade(gradeInput){
+		if(Number(gradeInput)){
+			return Number(gradeInput);
+		}else{
+			alert("Please enter a number");
+			gradeInput = setGradeInput();
+			while(gradeInput !== null){
+				return getGrade(gradeInput);
+			}
+		}
+	}
+	
+	function getWeight(weightInput){
+		if(Number(weightInput)){
+			return Number(weightInput);
+		}else{
+			alert("Please enter a number");
+			weightInput = setWeightInput();
+			while(weightInput !== null){
+				return getWeight(weightInput);
+			}
+		}		
+	}
+	
+	function addCategory(){
+	
+		//Prompt Input 
+		var category = setCategory();
+		if(category){
+			var gradeInput = setGradeInput();
+			if(gradeInput){
+				var grade = getGrade(gradeInput);
+			}
+			if(grade){
+				var weightInput = setWeightInput();
+				var weight = getWeight(weightInput);
+			}
+		}
+		//Create Data
+		if(category && grade && weight){	
+			if((weight != NaN) && (weight > 0) && (total_weight + weight <= 100) && (grade > 0)){
+			
+				total_weight = total_weight + weight;
+				total_grade = total_grade + (grade * weight);
+				category_count++;
+		
+				//Create HTML 
+				var table = document.getElementById("grade_table");
+				var row = table.insertRow(category_count);
+				var cell_1 = row.insertCell(0);
+				cell_1.innerHTML = category;
+				var cell_2 = row.insertCell(1);
+				cell_2.innerHTML = grade;
+				var cell_3 = row.insertCell(2);
+				cell_3.innerHTML = weight;
+		
+				//Create Remove Button;
+				var cell_4 = row.insertCell(3);
+				var btn = document.createElement("BUTTON");
+				var text = document.createTextNode("Remove");
+				btn.append(text);
+				btn.onclick = function() {
+					deleteRow();
+				}
+				cell_4.appendChild(btn);
+		
+				printAvg();
+				
+				//Errors
+				}else if(weight < 0){
+					alert("negative weight. Item has been removed.");
+				}else if(total_weight + weight > 100){
+					alert("weight > 100. Item has been removed.");
+				}else if(grade < 0){
+					alert("Yikes how bad did you do? Item has been removed.");
+				}
+			}
+		}
+	
+	function deleteRow(){
+		var td = event.target.parentNode; 
+		var tr = td.parentNode; // the row to be removed  
+		total_grade = total_grade - (tr.cells[1].innerHTML * tr.cells[2].innerHTML);
+		total_weight = total_weight - tr.cells[2].innerHTML;
+		tr.parentNode.removeChild(tr);
+		category_count--;
+		printAvg();
+	}
+	
+	function printAvg(){
+		var average = total_grade / total_weight;
+		var string_avg = average + "%";
+		if (total_weight == 0){
+			string_avg = "No Grades";
+		}
+		var x = document.getElementById("average_table").rows[0].cells;
+		x[1].innerHTML = string_avg;
+	}
+</script>
+</head>
+<body>
+<table border="1" id = "grade_table">
+	<tr>
+		<th> Category </th>
+		<th> Grade </th>
+		<th> Weight </th>
+	</tr>
+</table>
+
+<table id = "average_table">
+	<tr>
+		<th> Average: </th>
+		<th>No Grades</th>
+	</tr>
+</table>
+
+<form>
+	<input type="button" value = "Add Category" name = "add_category" onClick = "addCategory();">
+</form>
+<script type = "text/javascript">
+</script>
+<p> <a href="https://github.com/CodeOverloaded/Grade-Javascript"> Source Code </a></p>
+</body>
+</html>
