@@ -109,6 +109,7 @@
 	
 	function printAvg(){
 		var average = total_grade / total_weight;
+		average = average.toFixed(2);
 		var string_avg = average + "%";
 		if (total_weight == 0){
 			string_avg = "No Grades";
